@@ -47,7 +47,7 @@ if not exists (select * from sys.databases where name = 'NorthWind')
             DropDataBase();
             CreateDataBase();
 
-            var sqlFile = this.GetType().Assembly.GetManifestResourceStream("NorthWind.Scripts.script.sql");
+            var sqlFile = this.GetType().Assembly.GetManifestResourceStream("NorthWind.Scripts.northwind.sql");
             string[] sqlStrings;
             using (var sr = new StreamReader(sqlFile))
             {
