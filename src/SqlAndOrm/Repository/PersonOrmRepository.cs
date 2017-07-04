@@ -14,7 +14,7 @@ namespace SqlAndOrm.Repository
             throw new System.NotImplementedException();
         }
 
-        public void Get(long id)
+        public Person Get(long id)
         {
             throw new System.NotImplementedException();
         }

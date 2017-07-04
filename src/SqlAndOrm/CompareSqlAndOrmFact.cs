@@ -18,15 +18,22 @@ namespace SqlAndOrm
                 City = "New York",
             };
 
+            Assert.Equal("0", ExecuteQuery("select count(1) from Persons"));
+
             repo.Save(superMan);
+            Assert.Equal("1", ExecuteQuery("select count(1) from Persons"));
 
             superMan.Address = "220";
-
             repo.Update(superMan);
+            Assert.Equal("220", ExecuteQuery("select Address from Persons"));
 
-            repo.Get(superMan.Id);
+            Person person = repo.Get(superMan.Id);
+
+            Assert.Equal("Super", person.FirstName);
 
             repo.Delete(superMan);
+            Assert.Equal("0", ExecuteQuery("select count(1) from Persons"));
+
         }
 
         [Fact]
@@ -34,6 +41,29 @@ namespace SqlAndOrm
         {
             var repo = new PersonOrmRepository();
             
+            var superMan = new Person
+            {
+                FirstName = "Super",
+                LastName = "Man",
+                Address = "110",
+                City = "New York",
+            };
+
+            Assert.Equal("0", ExecuteQuery("select count(1) from Persons"));
+
+            repo.Save(superMan);
+            Assert.Equal("1", ExecuteQuery("select count(1) from Persons"));
+
+            superMan.Address = "220";
+            repo.Update(superMan);
+            Assert.Equal("220", ExecuteQuery("select Address from Persons"));
+
+            Person person = repo.Get(superMan.Id);
+
+            Assert.Equal("Super", person.FirstName);
+
+            repo.Delete(superMan);
+            Assert.Equal("0", ExecuteQuery("select count(1) from Persons"));
         }
     }
 }

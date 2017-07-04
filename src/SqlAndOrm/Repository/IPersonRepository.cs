@@ -6,7 +6,7 @@ namespace SqlAndOrm.Repository
     {
         void Save(Person person);
         void Update(Person people);
-        void Get(long id);
+        Person Get(long id);
         void Delete(Person people);
     }
 }
