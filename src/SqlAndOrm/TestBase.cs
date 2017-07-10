@@ -20,7 +20,7 @@ namespace SqlAndOrm
         {
             var sql = @"
 CREATE TABLE Persons (
-    PersonID int,
+    PersonID int IDENTITY(1,1),
     LastName varchar(255),
     FirstName varchar(255),
     Address varchar(255),
