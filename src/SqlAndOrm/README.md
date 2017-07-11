@@ -31,9 +31,18 @@ Object-Relational Mapping (ORM) is a technique that lets you query and manipulat
 
 ### Tasks
 
-1. Implement the repository with sql.
-1. Configure fluent nhibernate to finish the repository with orm.
-1. Use different way to implement the feature: find the person whose name have 'zhang'.
+#### ADO.NET
+
+- Implement the repository with sql.
+
+#### FluentNhibernate
+
+- Install FluentNhibernate.
+- Implement the repository with FluentNhibernate.
+
+#### Compare
+
+- Use different way to implement the feature: find the person whose name have 'zhang'.
 
 ### Next
 
