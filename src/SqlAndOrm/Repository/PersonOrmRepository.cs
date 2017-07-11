@@ -1,63 +1,53 @@
-﻿using FluentNHibernate.Cfg;
+﻿using System;
+using System.Reflection;
+using FluentNHibernate.Cfg;
 using NHibernate;
 using SqlAndOrm.Entity;
 
 namespace SqlAndOrm.Repository
 {
-    public class PersonOrmRepository : IPersonRepository
+    public class PersonOrmRepository : IPersonRepository, IDisposable
     {
+        readonly ISession session;
+
+        public PersonOrmRepository()
+        {
+            session = OrmHeler.GetCurrentFactory().OpenSession();
+        }
+
         public void Save(Person person)
         {
-            var sessionFactory = OrmHeler.GetCurrentFactory();
-            using (var session = sessionFactory.OpenSession())
-            {
-                using (var transaction = session.BeginTransaction())
-                {
-                    session.Save(person);
-                    transaction.Commit();
-                }
-            }
+            WrapTransaction(() => session.Save(person));
         }
 
         public void Update(Person person)
         {
-            var sessionFactory = OrmHeler.GetCurrentFactory();
-            using (var session = sessionFactory.OpenSession())
-            {
-                using (var transaction = session.BeginTransaction())
-                {
-                    session.Update(person);
-                    transaction.Commit();
-                }
-            }
+            WrapTransaction(() => session.Update(person));
         }
 
         public Person Get(long id)
         {
-            Person person = null;
-            var sessionFactory = OrmHeler.GetCurrentFactory();
-            using (var session = sessionFactory.OpenSession())
-            {
-                using (var transaction = session.BeginTransaction())
-                {
-                    person = session.QueryOver<Person>().Where(p => p.Id == id).SingleOrDefault();
-                    transaction.Commit();
-                }
-            }
-
-            return person;
+            return session.QueryOver<Person>().Where(p => p.Id == id).SingleOrDefault();
         }
 
-        public void Delete(Person people)
+        public void Delete(Person person)
         {
-            var sessionFactory = OrmHeler.GetCurrentFactory();
-            using (var session = sessionFactory.OpenSession())
+            WrapTransaction(() => session.Delete(person));
+        }
+
+        public void Dispose()
+        {
+            session.Close();
+            session.Dispose();
+        }
+
+
+        void WrapTransaction(Action action)
+        {
+            using (ITransaction transaction = session.BeginTransaction())
             {
-                using (var transaction = session.BeginTransaction())
-                {
-                    session.Delete(people);
-                    transaction.Commit();
-                }
+                action();
+                transaction.Commit();
             }
         }
     }
@@ -66,23 +56,22 @@ namespace SqlAndOrm.Repository
     {
         public static ISessionFactory GetCurrentFactory()
         {
-            if (sessionFactory == null)
-            {
-                sessionFactory = CreateSessionFactory();
-            }
-            return sessionFactory;
+            return sessionFactory ?? (sessionFactory = CreateSessionFactory());
         }
 
-        private static ISessionFactory CreateSessionFactory()
+        static ISessionFactory CreateSessionFactory()
         {
             return Fluently.Configure()
                 .Database(
                     FluentNHibernate.Cfg.Db.MsSqlConfiguration.MsSql2008
                         .ConnectionString("Data Source=(local);Initial Catalog=TestDb;Integrated Security=True;")
-                ).Mappings(o => o.FluentMappings.Add(typeof(PersonMap)))
+                )
+                .Mappings(m => m.FluentMappings.AddFromAssembly(Assembly.GetExecutingAssembly()))
                 .BuildSessionFactory();
         }
 
-        private static ISessionFactory sessionFactory { get; set; }
+        static ISessionFactory sessionFactory { get; set; }
+
+        
     }
 }

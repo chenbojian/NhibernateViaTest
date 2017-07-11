@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using SqlAndOrm.Entity;
 
@@ -18,7 +19,7 @@ namespace SqlAndOrm.Repository
         public void Update(Person person)
         {
             var sql = $"update Persons set LastName='{person.LastName}', FirstName='{person.FirstName}'," +
-                      $" Address='{person.Address}', City='{person.City}'";
+                      $" Address='{person.Address}', City='{person.City}' where PersonID={person.Id}";
             SqlHelper.ExecuteNonQuery(sql);
         }
 
