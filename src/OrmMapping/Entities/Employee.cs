@@ -9,6 +9,7 @@ namespace OrmMapping.Entities
         public virtual string FirstName { get; set; }
         public virtual string LastName { get; set; }
         public virtual Store Store { get; set; }
+        public virtual Salary Salary { get; set; }
     }
 
     public class EmployeeMap : ClassMap<Employee>

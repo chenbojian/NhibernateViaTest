@@ -9,6 +9,7 @@ namespace OrmMapping
     {
         private readonly RepositoryBase<Store> storeRepository;
         private readonly RepositoryBase<Employee> employeeRepository;
+        private readonly RepositoryBase<Salary> salaryRepository;
         private readonly RepositoryBase<Product> productRepository;
 
         public MappingTest()
@@ -16,35 +17,49 @@ namespace OrmMapping
             storeRepository = new RepositoryBase<Store>(Session);
             employeeRepository = new RepositoryBase<Employee>(Session);
             productRepository = new RepositoryBase<Product>(Session);
+            salaryRepository = new RepositoryBase<Salary>(Session);
         }
 
         [Fact]
-        void should_CRUD_employee()
+        void should_CRUD_salary_when_CRUD_employee()
         {
             var employee = new Employee
             {
                 FirstName = "Wonder",
                 LastName = "King"
             };
+
+            var salary = new Salary
+            {
+                Fee = 1000,
+                Employee = employee
+            };
+
+            employee.Salary = salary;
             Assert.Equal(default(long), employee.Id);
 
             //create
             employeeRepository.Create(employee);
             Assert.NotEqual(default(long), employee.Id);
+            Assert.NotEqual(default(long), employee.Salary.EmployeeId);
 
             //retreive
             Employee retreived = employeeRepository.FindById(employee.Id);
             Assert.Equal(employee.FirstName, retreived.FirstName);
             Assert.Equal(employee.LastName, retreived.LastName);
+            Assert.Equal(1000, retreived.Salary.Fee);
 
             //update
-            employee.LastName = "kingggg";
-            employeeRepository.Update(employee);
-            Assert.Equal("kingggg", employee.LastName);
+            salary.Fee = 2000;
+            employee.LastName = "Kingggg";
+            salaryRepository.Update(salary);
+            Assert.Equal(2000, salary.Fee);
+            Assert.Equal("Kingggg", employee.LastName);
 
             //delete
             employeeRepository.Delete(employee);
             Assert.Null(employeeRepository.FindById(employee.Id));
+            Assert.Null(salaryRepository.FindById(salary.EmployeeId));
         }
 
         [Fact]
@@ -130,7 +145,7 @@ namespace OrmMapping
         [Fact]
         void should_CRUD_products_when_CRUD_a_store()
         {
-            var store1 = new Store
+            var store = new Store
             {
                 Name = "Wonder's Store1"
             };
@@ -141,64 +156,73 @@ namespace OrmMapping
                 Price = 5.2
             };
 
-            store1.AddProduct(product1);
+            store.AddProduct(product1);
 
             //create
-            storeRepository.Create(store1);
+            storeRepository.Create(store);
 
             //retreive from store
-            Store retreivedStore1 = storeRepository.FindById(store1.Id);
-            Assert.Equal(store1.Name, retreivedStore1.Name);
-            Assert.Equal(1, retreivedStore1.Products.Count);
-            Assert.Equal(product1.Name, retreivedStore1.Products[0].Name);
-            Assert.Equal(product1.Price, retreivedStore1.Products[0].Price);
+            Store retreivedStore = storeRepository.FindById(store.Id);
+            Assert.Equal(store.Name, retreivedStore.Name);
+            Assert.Equal(1, retreivedStore.Products.Count);
+            Assert.Equal(product1.Name, retreivedStore.Products[0].Name);
+            Assert.Equal(product1.Price, retreivedStore.Products[0].Price);
 
             //retreive from product
-            Product retreivedProduct1 = productRepository.FindById(retreivedStore1.Products[0].Id);
+            Product retreivedProduct1 = productRepository.FindById(retreivedStore.Products[0].Id);
             Assert.Equal(product1.Name, retreivedProduct1.Name);
             Assert.Equal(1, retreivedProduct1.StoresStockedIn.Count);
-            Assert.Equal(store1.Name, retreivedProduct1.StoresStockedIn[0].Name);
+            Assert.Equal(store.Name, retreivedProduct1.StoresStockedIn[0].Name);
 
             //update, add product2 to store1
-            store1.Products[0].Price = 3.14;
+            store.Products[0].Price = 3.14;
             var product2 = new Product
             {
                 Name = "Wonder's Product2",
                 Price = 1000.01
             };
-            store1.AddProduct(product2);
-            storeRepository.Update(store1);
+            store.AddProduct(product2);
+            storeRepository.Update(store);
 
-            Assert.Equal(2, retreivedStore1.Products.Count);
-            retreivedProduct1 = retreivedStore1.Products.FirstOrDefault(p => p.Name == "Wonder's Product1");
-            Assert.NotNull(retreivedProduct1);
-            Assert.Equal(product1.Price, retreivedProduct1.Price);
-
-            var retreivedProduct2 = retreivedStore1.Products.FirstOrDefault(p => p.Name == "Wonder's Product2");
+            Assert.Equal(2, retreivedStore.Products.Count);
+            var retreivedProduct2 = retreivedStore.Products.FirstOrDefault(p => p.Name == "Wonder's Product2");
             Assert.NotNull(retreivedProduct2);
             Assert.Equal(product2.Price, retreivedProduct2.Price);
-
-
-            //create store2, add product2
-            var store2 = new Store
-            {
-                Name = "Wonder's Store2"
-            };
-            store2.AddProduct(product2);
-            storeRepository.Create(store2);
-
-            retreivedProduct2 = productRepository.FindById(product2.Id);
-            Assert.Equal(2, retreivedProduct2.StoresStockedIn.Count);
-            Assert.True(retreivedProduct2.StoresStockedIn.AsEnumerable().Any(s => s.Name != store1.Name));
-            Assert.True(retreivedProduct2.StoresStockedIn.AsEnumerable().Any(s => s.Name != store2.Name));
-
-
-            //delete store2
-            storeRepository.Delete(store2);
-            retreivedProduct2 = productRepository.FindById(product2.Id);
-
+           
+            //delete store
+            storeRepository.Delete(store);
+            Assert.Null(productRepository.FindById(product1.Id));
+            Assert.Null(productRepository.FindById(product2.Id));
         }
 
-       
+        [Fact]
+        void should_CRUD_products_when_CRUD_a_store1()
+        {
+            var store = new Store
+            {
+                Name = "Wonder's Store1"
+            };
+
+            var product1 = new Product
+            {
+                Name = "Wonder's Product1",
+                Price = 5.2
+            };
+
+            store.AddProduct(product1);
+
+            //create
+            productRepository.Create(product1);
+
+            //retreive from store
+            Store retreivedStore = storeRepository.FindById(store.Id);
+            Assert.Equal(store.Name, retreivedStore.Name);
+            Assert.Equal(1, retreivedStore.Products.Count);
+            Assert.Equal(product1.Name, retreivedStore.Products[0].Name);
+            Assert.Equal(product1.Price, retreivedStore.Products[0].Price);
+
+           
+        }
+
     }
 }
