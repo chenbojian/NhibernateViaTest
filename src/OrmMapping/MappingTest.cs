@@ -7,10 +7,10 @@ namespace OrmMapping
 {
     public class MappingTest :TestBase
     {
-        private readonly RepositoryBase<Store> storeRepository;
-        private readonly RepositoryBase<Employee> employeeRepository;
-        private readonly RepositoryBase<Salary> salaryRepository;
-        private readonly RepositoryBase<Product> productRepository;
+        readonly RepositoryBase<Store> storeRepository;
+        readonly RepositoryBase<Employee> employeeRepository;
+        readonly RepositoryBase<Salary> salaryRepository;
+        readonly RepositoryBase<Product> productRepository;
 
         public MappingTest()
         {
@@ -107,7 +107,7 @@ namespace OrmMapping
         {
             var store = new Store
             {
-                Name = "Wonder's Store",
+                Name = "Wonder's Store"
             };
 
             var employee = new Employee
@@ -194,35 +194,5 @@ namespace OrmMapping
             Assert.Null(productRepository.FindById(product1.Id));
             Assert.Null(productRepository.FindById(product2.Id));
         }
-
-        [Fact]
-        void should_CRUD_products_when_CRUD_a_store1()
-        {
-            var store = new Store
-            {
-                Name = "Wonder's Store1"
-            };
-
-            var product1 = new Product
-            {
-                Name = "Wonder's Product1",
-                Price = 5.2
-            };
-
-            store.AddProduct(product1);
-
-            //create
-            productRepository.Create(product1);
-
-            //retreive from store
-            Store retreivedStore = storeRepository.FindById(store.Id);
-            Assert.Equal(store.Name, retreivedStore.Name);
-            Assert.Equal(1, retreivedStore.Products.Count);
-            Assert.Equal(product1.Name, retreivedStore.Products[0].Name);
-            Assert.Equal(product1.Price, retreivedStore.Products[0].Price);
-
-           
-        }
-
     }
 }

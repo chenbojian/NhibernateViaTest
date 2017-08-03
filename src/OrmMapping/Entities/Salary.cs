@@ -14,7 +14,13 @@ namespace OrmMapping.Entities
     {
         public SalaryMap()
         {
-            throw new NotImplementedException();
+            Table("salary");
+            Id(s => s.EmployeeId).Column("employee_id").GeneratedBy.Foreign("Employee");
+            Map(s => s.Fee).Column("fee");
+
+            #region one-to-one
+            #endregion
+
         }
     }
 }

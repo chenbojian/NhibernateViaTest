@@ -34,7 +34,13 @@ namespace OrmMapping.Entities
     {
         public StoreMap()
         {
-            throw new NotImplementedException();
+            Table("stores");
+            Id(s => s.Id).Column("id");
+            Map(s => s.Name).Column("name");
+
+            #region one-to-many many-to-many
+            #endregion
+
         }
     }
 }

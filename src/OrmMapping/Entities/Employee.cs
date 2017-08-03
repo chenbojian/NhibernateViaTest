@@ -16,7 +16,13 @@ namespace OrmMapping.Entities
     {
         public EmployeeMap()
         {
-            throw new NotImplementedException();
+            Table("employees");
+            Id(e => e.Id).Column("id");
+            Map(e => e.FirstName).Column("first_name");
+            Map(e => e.LastName).Column("last_name");
+
+            #region many-to-one many to many
+            #endregion
         }
     }
 }

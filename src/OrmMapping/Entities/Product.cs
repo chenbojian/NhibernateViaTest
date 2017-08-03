@@ -22,7 +22,13 @@ namespace OrmMapping.Entities
     {
         public ProductMap()
         {
-            throw new NotImplementedException();
+            Table("products");
+            Id(p => p.Id).Column("id");
+            Map(p => p.Name).Column("name");
+            Map(p => p.Price).Column("price");
+
+            #region many-to-many
+            #endregion
         }
     }
 }
