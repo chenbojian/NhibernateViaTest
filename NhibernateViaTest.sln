@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NorthWind", "src\NorthWind\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlAndOrm", "src\SqlAndOrm\SqlAndOrm.csproj", "{01D734F8-2F07-4E0F-A263-5D1BEBECBF4E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrmMapping", "src\OrmMapping\OrmMapping.csproj", "{CF956948-3186-4ECD-8C99-5FE34751B09F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{01D734F8-2F07-4E0F-A263-5D1BEBECBF4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01D734F8-2F07-4E0F-A263-5D1BEBECBF4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01D734F8-2F07-4E0F-A263-5D1BEBECBF4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF956948-3186-4ECD-8C99-5FE34751B09F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF956948-3186-4ECD-8C99-5FE34751B09F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF956948-3186-4ECD-8C99-5FE34751B09F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF956948-3186-4ECD-8C99-5FE34751B09F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
