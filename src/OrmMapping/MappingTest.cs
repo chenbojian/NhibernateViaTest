@@ -137,6 +137,15 @@ namespace OrmMapping
             storeRepository.Update(store);
             Assert.Equal("Kingggg", store.Staff[0].LastName);
 
+            //delete orhpen
+            store.FireEmployee(employee);
+            storeRepository.Update(store);
+            Session.Flush();
+            Store anotherRetreived = storeRepository.FindById(store.Id);
+            Assert.Equal(0, anotherRetreived.Staff.Count);
+            Assert.Equal(null, employeeRepository.FindById(employee.Id));
+
+
             //delete
             storeRepository.Delete(store);
             Assert.Null(employeeRepository.FindById(employee.Id));
