@@ -21,7 +21,9 @@ namespace OrmMapping.Entities
             Map(e => e.FirstName).Column("first_name");
             Map(e => e.LastName).Column("last_name");
 
-            #region many-to-one many to many
+            #region many-to-one one to one
+            HasOne(e => e.Salary).Cascade.All().PropertyRef("Employee");
+            References(e => e.Store).Column("store_id");
             #endregion
         }
     }

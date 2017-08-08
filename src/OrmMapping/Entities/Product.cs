@@ -28,6 +28,7 @@ namespace OrmMapping.Entities
             Map(p => p.Price).Column("price");
 
             #region many-to-many
+            HasManyToMany(p => p.StoresStockedIn).Cascade.AllDeleteOrphan().Table("store_product").ChildKeyColumn("store_id");
             #endregion
         }
     }

@@ -19,6 +19,7 @@ namespace OrmMapping.Entities
             Map(s => s.Fee).Column("fee");
 
             #region one-to-one
+            HasOne(s => s.Employee).Cascade.All().Constrained();
             #endregion
 
         }

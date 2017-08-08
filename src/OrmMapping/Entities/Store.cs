@@ -28,6 +28,12 @@ namespace OrmMapping.Entities
             employee.Store = this;
             Staff.Add(employee);
         }
+
+        public virtual void FireEmployee(Employee employee)
+        {
+            employee.Store = this;
+            Staff.Remove(employee);
+        }
     }
 
     public class StoreMap : ClassMap<Store>
@@ -39,6 +45,8 @@ namespace OrmMapping.Entities
             Map(s => s.Name).Column("name");
 
             #region one-to-many many-to-many
+            HasMany(s => s.Staff).Cascade.AllDeleteOrphan().Inverse();
+            HasManyToMany(s => s.Products).Cascade.AllDeleteOrphan().Table("store_product").ChildKeyColumn("product_id");
             #endregion
 
         }
